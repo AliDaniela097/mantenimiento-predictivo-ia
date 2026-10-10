@@ -6,13 +6,16 @@ de demostracion para todo el equipo. Antes de un uso real fuera del aula,
 SECRET_KEY debe moverse a una variable de entorno y las credenciales a una
 base de datos con contrasenas hasheadas (bcrypt/argon2).
 """
+import os
 from datetime import datetime, timedelta, timezone
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jose import JWTError, jwt
 
-SECRET_KEY = "cambia-esta-clave-por-una-propia-antes-de-publicar-el-repo"
+# En un despliegue publico se define la variable de entorno SECRET_KEY; el valor
+# por defecto solo sirve para desarrollo local.
+SECRET_KEY = os.environ.get("SECRET_KEY", "cambia-esta-clave-por-una-propia-antes-de-publicar-el-repo")
 ALGORITHM = "HS256"
 EXPIRA_MINUTOS = 60
 
