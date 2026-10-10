@@ -3,84 +3,126 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Mantenimiento Predictivo — AI4I 2020</title>
-<link rel="stylesheet" href="style.css" />
+<meta name="color-scheme" content="light" />
+<title>Mantenimiento predictivo</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23f2b705'/%3E%3Cpath d='M6 22a10 10 0 0 1 20 0' fill='none' stroke='%231d272e' stroke-width='3'/%3E%3Cpath d='M16 22l5-8' stroke='%231d272e' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E" />
+<link rel="stylesheet" href="css/fuentes.css" />
+<link rel="stylesheet" href="css/tokens.css" />
+<link rel="stylesheet" href="css/base.css" />
+<link rel="stylesheet" href="css/componentes.css" />
 </head>
 <body>
+<a class="saltar" href="#principal">Saltar al contenido</a>
 <div class="contenedor">
-  <header>
-    <h1>Mantenimiento Predictivo</h1>
-    <p class="subtitulo">Predicción de fallas de máquinas industriales — dataset AI4I 2020</p>
+  <header class="cabecera">
+    <div>
+      <h1>Mantenimiento predictivo</h1>
+      <p class="subtitulo">Estima la probabilidad de falla de una máquina industrial a partir de sus condiciones de operación.</p>
+    </div>
+    <div class="cabecera-acciones">
+      <p id="estado-servicio" class="estado" data-estado="desconocido" role="status">
+        <span class="punto" aria-hidden="true"></span>
+        <span id="estado-texto">Comprobando el servicio</span>
+      </p>
+      <button id="btn-salir" type="button" class="boton secundario pequeno oculto">Cerrar sesión</button>
+    </div>
   </header>
 
-  <section id="seccion-login" class="tarjeta">
-    <h2>Iniciar sesión</h2>
-    <p class="ayuda">Usuario de demostración del equipo (ver <code>docs/contrato_api.md</code>).</p>
-    <form id="form-login">
-      <label>Usuario
-        <input type="text" id="usuario" value="equipo" required />
-      </label>
-      <label>Contraseña
-        <input type="password" id="contrasena" value="mantenimiento2026" required />
-      </label>
-      <button type="submit">Ingresar</button>
-    </form>
-    <p id="login-error" class="error oculto"></p>
-  </section>
-
-  <section id="seccion-app" class="oculto">
-    <div class="tarjeta">
-      <div class="fila-cabecera">
-        <h2>Nueva predicción</h2>
-        <button id="btn-salir" class="secundario">Cerrar sesión</button>
-      </div>
-      <form id="form-prediccion" class="grid-form">
-        <label>Tipo de producto
-          <select id="tipo">
-            <option value="L">L — baja calidad</option>
-            <option value="M" selected>M — media calidad</option>
-            <option value="H">H — alta calidad</option>
-          </select>
-        </label>
-        <label>Temperatura del aire (K)
-          <input type="number" step="0.1" id="temperatura_aire_k" value="300.0" required />
-        </label>
-        <label>Temperatura del proceso (K)
-          <input type="number" step="0.1" id="temperatura_proceso_k" value="310.0" required />
-        </label>
-        <label>Velocidad rotacional (rpm)
-          <input type="number" step="1" id="velocidad_rotacional_rpm" value="1500" required />
-        </label>
-        <label>Torque (Nm)
-          <input type="number" step="0.1" id="torque_nm" value="40.0" required />
-        </label>
-        <label>Desgaste de herramienta (min)
-          <input type="number" step="1" id="desgaste_herramienta_min" value="100" required />
-        </label>
-        <button type="submit">Predecir</button>
+  <main id="principal">
+    <section id="seccion-login" class="panel panel-login" aria-labelledby="t-login">
+      <h2 id="t-login">Iniciar sesión</h2>
+      <p class="ayuda">Usuario de demostración del equipo, ya escrito para la sustentación.</p>
+      <form id="form-login">
+        <div class="campo">
+          <label for="usuario">Usuario</label>
+          <div class="control-simple"><input type="text" id="usuario" value="equipo" autocomplete="username" required /></div>
+        </div>
+        <div class="campo">
+          <label for="contrasena">Contraseña</label>
+          <div class="control-simple"><input type="password" id="contrasena" value="mantenimiento2026" autocomplete="current-password" required /></div>
+        </div>
+        <button type="submit" id="btn-login" class="boton primario bloque">Ingresar</button>
+        <p id="login-error" class="error oculto" role="alert"></p>
       </form>
-      <div id="resultado" class="resultado oculto"></div>
-      <p id="prediccion-error" class="error oculto"></p>
-    </div>
+    </section>
 
-    <div class="tarjeta">
-      <div class="fila-cabecera">
-        <h2>Historial de predicciones</h2>
-        <button id="btn-refrescar" class="secundario">Actualizar</button>
+    <div id="seccion-app" class="oculto">
+      <div class="rejilla">
+        <section class="panel" aria-labelledby="t-form">
+          <h2 id="t-form">Condiciones de la máquina</h2>
+          <p class="ayuda">Ingresa las lecturas actuales. Mueve la barra o escribe el valor.</p>
+          <form id="form-prediccion" novalidate>
+            <fieldset class="campo">
+              <legend class="rotulo">Tipo de producto</legend>
+              <div class="segmentos">
+                <label class="segmento"><input type="radio" name="tipo" value="L" /><span><strong>L</strong><small>Baja calidad</small></span></label>
+                <label class="segmento"><input type="radio" name="tipo" value="M" checked /><span><strong>M</strong><small>Media calidad</small></span></label>
+                <label class="segmento"><input type="radio" name="tipo" value="H" /><span><strong>H</strong><small>Alta calidad</small></span></label>
+              </div>
+            </fieldset>
+            <div id="campos-numericos"></div>
+            <button type="submit" id="btn-predecir" class="boton primario bloque">Predecir</button>
+            <p id="prediccion-error" class="error oculto" role="alert"></p>
+          </form>
+        </section>
+
+        <section class="panel panel-diagnostico" aria-labelledby="t-diag" data-nivel="ninguno" id="panel-diagnostico">
+          <h2 id="t-diag">Diagnóstico</h2>
+          <div id="manometro"></div>
+          <div class="lectura" aria-live="polite" aria-atomic="true">
+            <p class="porcentaje" id="res-porcentaje">Sin datos</p>
+            <p class="veredicto"><span class="icono" id="res-icono" aria-hidden="true">?</span><span id="res-etiqueta">Sin predicción</span></p>
+            <p class="lectura-detalle" id="res-detalle">Completa las condiciones y presiona Predecir.</p>
+            <p class="lectura-meta" id="res-meta"></p>
+          </div>
+        </section>
       </div>
-      <table id="tabla-historial">
-        <thead>
-          <tr>
-            <th>#</th><th>Tipo</th><th>Temp. aire</th><th>Temp. proceso</th>
-            <th>Vel. rot.</th><th>Torque</th><th>Desgaste</th><th>Resultado</th><th>Prob. falla</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-      <p id="historial-vacio" class="ayuda oculto">Todavía no hay predicciones.</p>
+
+      <section class="panel" aria-labelledby="t-hist">
+        <div class="fila-cabecera">
+          <h2 id="t-hist">Historial de predicciones</h2>
+          <div class="acciones-historial">
+            <div class="filtros" role="group" aria-label="Filtrar historial">
+              <button type="button" id="filtro-todas" aria-pressed="true">Todas</button>
+              <button type="button" id="filtro-fallas" aria-pressed="false">Solo fallas</button>
+            </div>
+            <button type="button" id="btn-refrescar" class="boton secundario pequeno">Actualizar</button>
+          </div>
+        </div>
+        <p id="mensaje-historial" class="ayuda oculto" role="status"></p>
+        <p id="historial-error" class="error oculto" role="alert"></p>
+        <div class="tabla-scroll">
+          <table id="tabla-historial">
+            <thead>
+              <tr>
+                <th scope="col" class="num">N.º</th>
+                <th scope="col">Resultado</th>
+                <th scope="col" class="num">Prob. de falla</th>
+                <th scope="col">Tipo</th>
+                <th scope="col" class="num">Aire (K)</th>
+                <th scope="col" class="num">Proceso (K)</th>
+                <th scope="col" class="num">Velocidad (rpm)</th>
+                <th scope="col" class="num">Torque (Nm)</th>
+                <th scope="col" class="num">Desgaste (min)</th>
+                <th scope="col">Hora</th>
+                <th scope="col"><span class="solo-lector">Acciones</span></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div class="paginacion" id="paginacion">
+          <p class="ayuda" id="pagina-info"></p>
+          <div class="botones">
+            <button type="button" id="btn-recientes" class="boton secundario pequeno">Más recientes</button>
+            <button type="button" id="btn-antiguas" class="boton secundario pequeno">Más antiguas</button>
+          </div>
+        </div>
+        <p class="pie">El historial es compartido y se borra al reiniciar el servidor.</p>
+      </section>
     </div>
-  </section>
+  </main>
 </div>
-<script src="script.js"></script>
+<script type="module" src="js/main.js"></script>
 </body>
 </html>
