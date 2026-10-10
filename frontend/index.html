@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mantenimiento Predictivo — AI4I 2020</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="contenedor">
+  <header>
+    <h1>Mantenimiento Predictivo</h1>
+    <p class="subtitulo">Predicción de fallas de máquinas industriales — dataset AI4I 2020</p>
+  </header>
+
+  <section id="seccion-login" class="tarjeta">
+    <h2>Iniciar sesión</h2>
+    <p class="ayuda">Usuario de demostración del equipo (ver <code>docs/contrato_api.md</code>).</p>
+    <form id="form-login">
+      <label>Usuario
+        <input type="text" id="usuario" value="equipo" required />
+      </label>
+      <label>Contraseña
+        <input type="password" id="contrasena" value="mantenimiento2026" required />
+      </label>
+      <button type="submit">Ingresar</button>
+    </form>
+    <p id="login-error" class="error oculto"></p>
+  </section>
+
+  <section id="seccion-app" class="oculto">
+    <div class="tarjeta">
+      <div class="fila-cabecera">
+        <h2>Nueva predicción</h2>
+        <button id="btn-salir" class="secundario">Cerrar sesión</button>
+      </div>
+      <form id="form-prediccion" class="grid-form">
+        <label>Tipo de producto
+          <select id="tipo">
+            <option value="L">L — baja calidad</option>
+            <option value="M" selected>M — media calidad</option>
+            <option value="H">H — alta calidad</option>
+          </select>
+        </label>
+        <label>Temperatura del aire (K)
+          <input type="number" step="0.1" id="temperatura_aire_k" value="300.0" required />
+        </label>
+        <label>Temperatura del proceso (K)
+          <input type="number" step="0.1" id="temperatura_proceso_k" value="310.0" required />
+        </label>
+        <label>Velocidad rotacional (rpm)
+          <input type="number" step="1" id="velocidad_rotacional_rpm" value="1500" required />
+        </label>
+        <label>Torque (Nm)
+          <input type="number" step="0.1" id="torque_nm" value="40.0" required />
+        </label>
+        <label>Desgaste de herramienta (min)
+          <input type="number" step="1" id="desgaste_herramienta_min" value="100" required />
+        </label>
+        <button type="submit">Predecir</button>
+      </form>
+      <div id="resultado" class="resultado oculto"></div>
+      <p id="prediccion-error" class="error oculto"></p>
+    </div>
+
+    <div class="tarjeta">
+      <div class="fila-cabecera">
+        <h2>Historial de predicciones</h2>
+        <button id="btn-refrescar" class="secundario">Actualizar</button>
+      </div>
+      <table id="tabla-historial">
+        <thead>
+          <tr>
+            <th>#</th><th>Tipo</th><th>Temp. aire</th><th>Temp. proceso</th>
+            <th>Vel. rot.</th><th>Torque</th><th>Desgaste</th><th>Resultado</th><th>Prob. falla</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <p id="historial-vacio" class="ayuda oculto">Todavía no hay predicciones.</p>
+    </div>
+  </section>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
