@@ -1,0 +1,19 @@
+# Blueprint de Render: https://render.com/docs/blueprint-spec
+# Un solo servicio web (plan gratuito) que sirve la API y el frontend.
+services:
+  - type: web
+    name: mantenimiento-predictivo
+    runtime: python
+    plan: free
+    # Se instala todo desde backend/requirements.txt (scikit-learn 1.6.1 exige Python 3.12 o 3.13).
+    buildCommand: pip install -r backend/requirements.txt
+    # main.py busca el frontend en ../../frontend respecto a backend/app/, por eso se arranca desde backend/.
+    startCommand: cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/v1/salud
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.10
+      # Render genera un valor aleatorio la primera vez; lo lee backend/app/auth.py.
+      - key: SECRET_KEY
+        generateValue: true
