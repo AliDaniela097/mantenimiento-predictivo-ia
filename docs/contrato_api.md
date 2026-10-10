@@ -1,5 +1,7 @@
 # Contrato de API — Mantenimiento Predictivo (v1)
 
+> **Archivo formal (OpenAPI 3.1, YAML):** `docs/openapi.yaml` — generado automaticamente desde el backend implementado (fuente unica de verdad). Este documento es la version legible/explicada del mismo contrato.
+
 Diseñado primero (enfoque API-first), antes de programar el backend, siguiendo los
 principios de diseño de contratos: nombres coherentes, versión explícita en la ruta,
 esquemas reutilizables y compatibilidad hacia atrás.

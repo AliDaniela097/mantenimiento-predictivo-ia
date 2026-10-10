@@ -1,0 +1,205 @@
+openapi: 3.1.0
+info:
+  title: API de Prediccion de Fallas - Mantenimiento Predictivo
+  description: Expone el modelo de Random Forest (tuneado) entrenado sobre el dataset
+    AI4I 2020 para predecir fallas de maquinas industriales. Contrato completo en
+    docs/contrato_api.md.
+  version: 1.0.0
+paths:
+  /api/v1/salud:
+    get:
+      tags:
+      - sistema
+      summary: Salud
+      operationId: salud_api_v1_salud_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/v1/auth/login:
+    post:
+      tags:
+      - auth
+      summary: Login
+      operationId: login_api_v1_auth_login_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/predicciones:
+    post:
+      tags:
+      - predicciones
+      summary: Crear Prediccion
+      operationId: crear_prediccion_api_v1_predicciones_post
+      security:
+      - HTTPBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EntradaPrediccion'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    get:
+      tags:
+      - predicciones
+      summary: Listar Predicciones
+      operationId: listar_predicciones_api_v1_predicciones_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+          title: Page
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          default: 20
+          title: Limit
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    EntradaPrediccion:
+      properties:
+        tipo:
+          type: string
+          enum:
+          - L
+          - M
+          - H
+          title: Tipo
+          description: 'Calidad del producto: L=baja, M=media, H=alta'
+        temperatura_aire_k:
+          type: number
+          exclusiveMinimum: 0.0
+          title: Temperatura Aire K
+          description: Temperatura del aire (Kelvin)
+        temperatura_proceso_k:
+          type: number
+          exclusiveMinimum: 0.0
+          title: Temperatura Proceso K
+          description: Temperatura del proceso (Kelvin)
+        velocidad_rotacional_rpm:
+          type: number
+          exclusiveMinimum: 0.0
+          title: Velocidad Rotacional Rpm
+          description: Velocidad rotacional (RPM)
+        torque_nm:
+          type: number
+          minimum: 0.0
+          title: Torque Nm
+          description: Torque (Newton-metro)
+        desgaste_herramienta_min:
+          type: number
+          minimum: 0.0
+          title: Desgaste Herramienta Min
+          description: Desgaste de la herramienta (minutos)
+      type: object
+      required:
+      - tipo
+      - temperatura_aire_k
+      - temperatura_proceso_k
+      - velocidad_rotacional_rpm
+      - torque_nm
+      - desgaste_herramienta_min
+      title: EntradaPrediccion
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    LoginRequest:
+      properties:
+        usuario:
+          type: string
+          title: Usuario
+        contrasena:
+          type: string
+          title: Contrasena
+      type: object
+      required:
+      - usuario
+      - contrasena
+      title: LoginRequest
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
