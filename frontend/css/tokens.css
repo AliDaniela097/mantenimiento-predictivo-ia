@@ -1,0 +1,36 @@
+:root {
+  /* Paleta: chapa de planta y señalización de seguridad */
+  --acero: #e7eaec;
+  --chapa: #f7f8f9;
+  --grafito: #1d272e;
+  --grafito-suave: #4a5760;
+  --linea: #c9cfd3;
+  --borde-control: #7d8890;
+
+  --amarillo: #f2b705;
+  --amarillo-hover: #dca504;
+  --amarillo-claro: #fbf0c6;
+  --amarillo-texto: #5c4400;
+
+  --verde: #2e7d4f;
+  --verde-claro: #e3f1e8;
+  --verde-texto: #1f5a38;
+
+  --rojo: #c0392b;
+  --rojo-claro: #f9e3e0;
+  --rojo-texto: #8e2a1f;
+
+  /* Tipografía */
+  --fuente: "Barlow", "Segoe UI", Arial, sans-serif;
+  --fuente-titulos: "Barlow Semi Condensed", "Barlow", "Segoe UI", Arial, sans-serif;
+
+  /* Escala: 14 / 16 / 20 / 28 / 56 */
+  --t-pequeno: 0.875rem;
+  --t-base: 1rem;
+  --t-medio: 1.25rem;
+  --t-grande: 1.75rem;
+  --t-cifra: 3.5rem;
+
+  --radio: 6px;
+  --espacio: 24px;
+}
